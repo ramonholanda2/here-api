@@ -743,7 +743,9 @@
         let map, platform, ui, router, markers = [];
         let routeLine, currentRoute;
 
-        function addMarker(coords, color, title) {
+
+
+        function addMarker(coords, color, title, type) {
             const marker = new H.map.Marker(coords, {
                 icon: new H.map.Icon(`https://maps.google.com/mapfiles/ms/icons/${color}-dot.png`)
             });
@@ -837,13 +839,13 @@
         }
 
         function initApp() {
+
             const clientList = document.getElementById("clientList");
             clientList.innerHTML = "";
             const loadingElement = document.querySelector('.loading');
             if (loadingElement) {
                 loadingElement.classList.remove('loading');
             }
-
 
             platform = new H.service.Platform({ apikey: apiKey });
             const defaultLayers = platform.createDefaultLayers();
@@ -857,6 +859,23 @@
                     pixelRatio: window.devicePixelRatio || 1
                 }
             );
+
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        var lat = position.coords.latitude;
+                        var lng = position.coords.longitude;
+                        addMarker({ lat, lng }, "green", "ramon");
+
+                    },
+                    error => {
+                        alert("Erro ao obter localização: " + error.message);
+                    }
+                );
+            } else {
+                alert("Geolocalização não é suportada pelo navegador.");
+            }
 
             window.addEventListener("resize", () => map.getViewPort().resize());
             const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
@@ -914,7 +933,7 @@
                     }
                 });
 
-                header.appendChild(number);
+                header.appendChild(number); 
                 header.appendChild(name);
                 header.appendChild(checkbox);
 
@@ -986,7 +1005,7 @@
                 return days[index];
             }
 
-            const selectedCustomers = getSelectedClients(); 
+            const selectedCustomers = getSelectedClients();
 
             const timestampMs = new Date(initialDate).getTime();
             const startDateFormatted = `/Date(${timestampMs})/`;
@@ -1026,7 +1045,7 @@
 
             const response = await axios.post('/api/rotas', payload).then((res) => {
 
-            }).catch(err =>{
+            }).catch(err => {
                 console.log(err)
             });
             alert("Rota salva com sucesso! (Funcionalidade de backend pode ser integrada aqui)");
@@ -1048,6 +1067,11 @@
             tbody.innerHTML = '';
 
         }
+
+
+
+
+
 
     </script>
 
