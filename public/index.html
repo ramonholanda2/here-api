@@ -4,580 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Meus clientes sem visitas planejadas - SAP Fiori</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            height: 100%;
-            font-family: "72", "72full", Arial, Helvetica, sans-serif;
-            background-color: #f7f7f7;
-            color: #32363a;
-        }
-
-        .container {
-            display: flex;
-            height: 100vh;
-        }
-
-        /* SAP Fiori Sidebar - Enhanced */
-        .sidebar {
-            width: 30%;
-            background: #ffffff;
-            border-right: 1px solid #d9d9d9;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 0.125rem rgba(0, 0, 0, 0.15);
-        }
-
-        .sidebar-header {
-            background: linear-gradient(135deg, #0a6ed1 0%, #0854a0 100%);
-            padding: 1.5rem;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-icon {
-            width: 2rem;
-            height: 2rem;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 0.25rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            color: white;
-            font-weight: bold;
-            backdrop-filter: blur(10px);
-        }
-
-        .header-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: white;
-            flex: 1;
-            line-height: 1.3;
-        }
-
-        .header-info {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-            font-size: 0.75rem;
-            padding: 0.375rem 0.75rem;
-            border-radius: 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            font-weight: 500;
-            backdrop-filter: blur(10px);
-        }
-
-        .sidebar-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1.5rem;
-            background: #fafafa;
-        }
-
-        /* Client Grid Layout - Enhanced */
-        .clients-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .client-item {
-            background: white;
-            border: 1px solid #e5e5e5;
-            border-radius: 0.5rem;
-            padding: 1.25rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            min-height: 120px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .client-item:hover {
-            border-color: #0a6ed1;
-            box-shadow: 0 4px 12px rgba(10, 110, 209, 0.15);
-            transform: translateY(-2px);
-        }
-
-        .client-item.selected {
-            background: linear-gradient(135deg, #f0f7ff 0%, #e6f3ff 100%);
-            border-color: #0a6ed1;
-            box-shadow: 0 0 0 2px rgba(10, 110, 209, 0.2), 0 4px 12px rgba(10, 110, 209, 0.15);
-        }
-
-        .client-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .client-number {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #0a6ed1;
-            min-width: 1.5rem;
-            background: #f0f7ff;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            text-align: center;
-        }
-
-        .client-name {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #32363a;
-            line-height: 1.3;
-            flex: 1;
-        }
-
-        .client-checkbox {
-            width: 1.125rem;
-            height: 1.125rem;
-            accent-color: #0a6ed1;
-            margin-left: auto;
-            cursor: pointer;
-        }
-
-        .client-address {
-            font-size: 0.75rem;
-            color: #6a6d70;
-            line-height: 1.4;
-            margin-left: 2.25rem;
-            margin-top: 0.5rem;
-        }
-
-        .client-status {
-            position: absolute;
-            top: 1rem;
-            right: 3rem;
-            width: 0.625rem;
-            height: 0.625rem;
-            border-radius: 50%;
-            box-shadow: 0 0 0 2px white;
-        }
-
-        .status-verde {
-            background: #30914c;
-        }
-
-        .status-vermelho {
-            background: #bb0000;
-        }
-
-        .status-azul {
-            background: #0a6ed1;
-        }
-
-        /* Map Container - Enhanced */
-        #mapContainer {
-            width: 70%;
-            height: 100%;
-            position: relative;
-            background: #f7f7f7;
-        }
-
-        /* Action Bar - Enhanced with SAP Fiori styling */
-        .action-bar {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            z-index: 1000;
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        .fiori-button {
-            background: #ffffff;
-            border: 1px solid #d9d9d9;
-            border-radius: 0.5rem;
-            padding: 0.75rem 1.25rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #32363a;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-            backdrop-filter: blur(10px);
-            font-family: "72", "72full", Arial, Helvetica, sans-serif;
-        }
-
-        .fiori-button:hover {
-            background: #f8fafe;
-            border-color: #0a6ed1;
-            color: #0a6ed1;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(10, 110, 209, 0.2);
-        }
-
-        .fiori-button:active {
-            transform: translateY(0);
-        }
-
-        .fiori-button.primary {
-            background: linear-gradient(135deg, #0a6ed1 0%, #0854a0 100%);
-            border-color: #0a6ed1;
-            color: white;
-            font-weight: 600;
-        }
-
-        .fiori-button.primary:hover {
-            background: linear-gradient(135deg, #085cad 0%, #063d7a 100%);
-            border-color: #085cad;
-            color: white;
-        }
-
-        .fiori-button.success {
-            background: linear-gradient(135deg, #30914c 0%, #2b7a3e 100%);
-            border-color: #30914c;
-            color: white;
-            font-weight: 600;
-        }
-
-        .fiori-button.success:hover {
-            background: linear-gradient(135deg, #2b7a3e 0%, #236a31 100%);
-            border-color: #2b7a3e;
-            color: white;
-        }
-
-        /* Route Info Panel - Enhanced */
-        .route-info {
-            position: absolute;
-            bottom: 1.5rem;
-            left: 1.5rem;
-            right: 1.5rem;
-            background: white;
-            border: 1px solid #e5e5e5;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-            backdrop-filter: blur(20px);
-            display: none;
-        }
-
-        .route-info.visible {
-            display: block;
-            animation: slideUp 0.3s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .route-info-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #32363a;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid #f0f7ff;
-        }
-
-        .route-stats {
-            display: flex;
-            gap: 2rem;
-            font-size: 0.875rem;
-        }
-
-        .route-stat {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            flex: 1;
-        }
-
-        .route-stat-label {
-            font-weight: 600;
-            color: #6a6d70;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .route-stat-value {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #0a6ed1;
-        }
-
-        /* Pagination - Enhanced */
-        .pagination {
-            padding: 1.25rem 1.5rem;
-            border-top: 1px solid #d9d9d9;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
-            font-size: 0.875rem;
-            color: #6a6d70;
-        }
-
-        .pagination-controls {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .pagination-button {
-            width: 2rem;
-            height: 2rem;
-            border: 1px solid #d9d9d9;
-            background: white;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.875rem;
-            transition: all 0.2s ease;
-            color: #6a6d70;
-        }
-
-        .pagination-button:hover:not(:disabled) {
-            border-color: #0a6ed1;
-            color: #0a6ed1;
-            background: #f0f7ff;
-        }
-
-        .pagination-button:disabled {
-            background: #f5f5f5;
-            color: #d9d9d9;
-            cursor: not-allowed;
-        }
-
-        /* Modal - Enhanced SAP Fiori styling */
-        .fiori-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            backdrop-filter: blur(4px);
-        }
-
-        .fiori-modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            width: 90%;
-            max-width: 800px;
-            max-height: 90%;
-            overflow-y: auto;
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
-            font-family: '72', Arial, sans-serif;
-            animation: modalSlideIn 0.3s ease-out;
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95) translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        .fiori-modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #f0f7ff;
-        }
-
-        .fiori-modal-header h2 {
-            color: #32363a;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .fiori-form-row {
-            margin: 1.25rem 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .fiori-form-row label {
-            min-width: 140px;
-            font-weight: 500;
-            color: #32363a;
-        }
-
-        .fiori-form-row input,
-        .fiori-form-row select,
-        .fiori-form-row textarea {
-            flex: 1;
-            padding: 0.75rem;
-            border: 1px solid #d9d9d9;
-            border-radius: 0.5rem;
-            font-family: "72", Arial, sans-serif;
-            transition: border-color 0.2s ease;
-        }
-
-        .fiori-form-row input:focus,
-        .fiori-form-row select:focus,
-        .fiori-form-row textarea:focus {
-            outline: none;
-            border-color: #0a6ed1;
-            box-shadow: 0 0 0 2px rgba(10, 110, 209, 0.1);
-        }
-
-        .days-week {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 0.75rem;
-        }
-
-        .days-week label {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            min-width: auto;
-            font-size: 0.875rem;
-        }
-
-        .fiori-form-footer {
-            text-align: right;
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid #f0f0f0;
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-        }
-
-        .fiori-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-            border-radius: 0.5rem;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .fiori-table th,
-        .fiori-table td {
-            border: 1px solid #e5e5e5;
-            padding: 0.75rem;
-            text-align: left;
-        }
-
-        .fiori-table th {
-            background: #f8fafe;
-            font-weight: 600;
-            color: #32363a;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        /* Loading animation */
-        .loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 3rem;
-            color: #6a6d70;
-            font-size: 0.875rem;
-        }
-
-        .loading::before {
-            content: '';
-            width: 1.5rem;
-            height: 1.5rem;
-            border: 2px solid #e5e5e5;
-            border-top-color: #0a6ed1;
-            border-radius: 50%;
-            margin-right: 0.75rem;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                height: 50%;
-            }
-
-            #mapContainer {
-                width: 100%;
-                height: 50%;
-            }
-
-            .action-bar {
-                position: relative;
-                top: 0;
-                right: 0;
-                margin: 1rem;
-                flex-wrap: wrap;
-            }
-
-            .route-info {
-                position: relative;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                margin: 1rem;
-            }
-
-            .clients-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-
-    <!-- HERE Maps -->
     <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
     <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+    <link rel="stylesheet" type="text/css" href="/public/styles.css" />
 </head>
 
 <body>
@@ -611,6 +44,9 @@
                 </button>
                 <button class="fiori-button success" onclick="openFormRoute()">
                     ➕ Criar Rota
+                </button>
+                <button class="fiori-button warning" onclick="enablePolygonSelection()">
+                    🔲 Selecionar Área
                 </button>
             </div>
 
@@ -709,29 +145,8 @@
     </div>
 
     <script>
+        // ---------------------- config ----------------------
         const apiKey = 'cn1jsr6t-Av8fGyDYWosAqeKHK7HsEAMCVG5PWs0ILQ';
-
-        let allCustomers = [];
-
-
-        async function loadCustomers() {
-            try {
-                const urlParams = new URLSearchParams(window.location.search);
-                const employeeID = urlParams.get('employeeID');
-
-                console.log(employeeID)
-
-                const response = await axios.get(`/api/clientes?employeeID=${employeeID}`);
-                allCustomers = response.data;
-                console.log(response.data);
-                initApp()
-            } catch (err) {
-                console.error('Erro ao carregar clientes:', err);
-                document.getElementById("clientList").innerText = "Erro ao carregar clientes.";
-            }
-        }
-
-        loadCustomers();
 
         const statusColors = {
             verde: "green",
@@ -740,112 +155,36 @@
             cinza: 'gray'
         };
 
+        let allCustomers = [];
         let map, platform, ui, router, markers = [];
         let routeLine, currentRoute;
 
+        // ---------------------- initial load ----------------------
+        async function loadCustomers() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const employeeID = urlParams.get('employeeID');
+                console.log(employeeID);
 
-
-        function addMarker(coords, color, title, type) {
-            const marker = new H.map.Marker(coords, {
-                icon: new H.map.Icon(`https://maps.google.com/mapfiles/ms/icons/${color}-dot.png`)
-            });
-            marker.setData(title);
-            marker.addEventListener("tap", evt => {
-                const bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
-                    content: `<div style="font-family: '72', Arial; padding: 0.5rem;">
-                         <strong>${evt.target.getData()}</strong>
-                       </div>`
-                });
-                ui.addBubble(bubble);
-            });
-            map.addObject(marker);
-            markers.push(marker);
-        }
-
-        function drawRoute(waypoints) {
-            if (routeLine) {
-                map.removeObject(routeLine);
-                routeLine = null;
-            }
-
-            const routingParams = {
-                transportMode: 'car',
-                origin: `${waypoints[0].latitude},${waypoints[0].longitude}`,
-                destination: `${waypoints[waypoints.length - 1].latitude},${waypoints[waypoints.length - 1].longitude}`,
-                return: 'polyline,summary,actions,instructions',
-            };
-
-            if (waypoints.length > 2) {
-                routingParams.via = waypoints.slice(1, waypoints.length - 1).map(p => `${p.latitude},${p.longitude}`);
-            }
-
-            router.calculateRoute(routingParams, result => {
-                if (result.routes.length) {
-                    const route = result.routes[0];
-                    currentRoute = route;
-                    const linestring = H.geo.LineString.fromFlexiblePolyline(route.sections[0].polyline);
-
-                    routeLine = new H.map.Polyline(linestring, {
-                        style: { strokeColor: '#0a6ed1', lineWidth: 4 }
-                    });
-
-                    map.addObject(routeLine);
-                    map.getViewModel().setLookAtData({ bounds: routeLine.getBoundingBox() });
-
-                    updateRouteInfo(route, waypoints.length);
-                }
-            }, error => {
-                console.error("Erro ao calcular rota:", error);
-            });
-        }
-
-        function updateRouteInfo(route, clientCount) {
-            const routeInfo = document.getElementById('routeInfo');
-            const distance = Math.round(route.sections[0].summary.length / 1000);
-            const duration = Math.round(route.sections[0].summary.duration / 60);
-
-            document.getElementById('routeDistance').textContent = `${distance}`;
-            document.getElementById('routeDuration').textContent = `${duration}`;
-            document.getElementById('routeClients').textContent = `${clientCount}`;
-
-            routeInfo.classList.add('visible');
-        }
-
-        function clearRoute() {
-            if (routeLine) {
-                map.removeObject(routeLine);
-                routeLine = null;
-                currentRoute = null;
-            }
-
-            document.querySelectorAll('.client-checkbox').forEach(checkbox => {
-                checkbox.checked = false;
-            });
-
-            document.querySelectorAll('.client-item').forEach(item => {
-                item.classList.remove('selected');
-            });
-
-            document.getElementById('routeInfo').classList.remove('visible');
-        }
-
-        function optimizeRoute() {
-            const selected = getSelectedClients();
-            if (selected.length >= 2) {
-                drawRoute(selected);
-            } else {
-                alert('Selecione pelo menos 2 clientes para calcular a rota.');
+                const response = await axios.get(`/api/clientes?employeeID=${employeeID}`);
+                allCustomers = response.data;
+                console.log(response.data);
+                initApp();
+            } catch (err) {
+                console.error('Erro ao carregar clientes:', err);
+                document.getElementById("clientList").innerText = "Erro ao carregar clientes.";
             }
         }
 
+        loadCustomers();
+
+        // ---------------------- initial map ----------------------
         function initApp() {
-
             const clientList = document.getElementById("clientList");
             clientList.innerHTML = "";
+
             const loadingElement = document.querySelector('.loading');
-            if (loadingElement) {
-                loadingElement.classList.remove('loading');
-            }
+            if (loadingElement) loadingElement.classList.remove('loading');
 
             platform = new H.service.Platform({ apikey: apiKey });
             const defaultLayers = platform.createDefaultLayers();
@@ -860,29 +199,44 @@
                 }
             );
 
+            window.addEventListener("resize", () => map.getViewPort().resize());
+            new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+            ui = H.ui.UI.createDefault(map, defaultLayers);
+            router = platform.getRoutingService(null, 8);
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     position => {
-                        var lat = position.coords.latitude;
-                        var lng = position.coords.longitude;
-                        addMarker({ lat, lng }, "green", "ramon");
-
+                        addMarker({ lat: position.coords.latitude, lng: position.coords.longitude }, "green", "ramon");
                     },
-                    error => {
-                        alert("Erro ao obter localização: " + error.message);
-                    }
+                    error => alert("Erro ao obter localização: " + error.message)
                 );
-            } else {
-                alert("Geolocalização não é suportada pelo navegador.");
             }
 
-            window.addEventListener("resize", () => map.getViewPort().resize());
-            const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-            ui = H.ui.UI.createDefault(map, defaultLayers);
-            router = platform.getRoutingService(null, 8);
+            renderCustomerList();
+        }
 
-            // Create grid container
+        // ---------------------- markers ----------------------
+        function addMarker(coords, color, title) {
+            const marker = new H.map.Marker(coords, {
+                icon: new H.map.Icon(`https://maps.google.com/mapfiles/ms/icons/${color}-dot.png`)
+            });
+            marker.setData(title);
+            marker.addEventListener("tap", evt => {
+                const bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
+                    content: `<div style="font-family: '72', Arial; padding: 0.5rem;">
+                        <strong>${evt.target.getData()}</strong>
+                    </div>`
+                });
+                ui.addBubble(bubble);
+            });
+            map.addObject(marker);
+            markers.push(marker);
+        }
+
+        // ---------------------- list customers ----------------------
+        function renderCustomerList() {
+            const clientList = document.getElementById("clientList");
             const gridContainer = document.createElement("div");
             gridContainer.className = "clients-grid";
 
@@ -917,36 +271,25 @@
                 address.textContent = customer.endereco;
 
                 checkbox.addEventListener("change", (e) => {
-                    if (e.target.checked) {
-                        item.classList.add('selected');
-                    } else {
-                        item.classList.remove('selected');
-                    }
-
+                    item.classList.toggle('selected', e.target.checked);
                     const selected = getSelectedClients();
                     if (selected.length >= 2) {
                         drawRoute(selected);
                     } else if (routeLine) {
-                        map.removeObject(routeLine);
-                        routeLine = null;
-                        document.getElementById('routeInfo').classList.remove('visible');
+                        clearRoute();
                     }
                 });
 
-                header.appendChild(number); 
+                item.addEventListener('click', (e) => {
+                    if (e.target !== checkbox) checkbox.click();
+                });
+
+                header.appendChild(number);
                 header.appendChild(name);
                 header.appendChild(checkbox);
-
                 item.appendChild(header);
                 item.appendChild(address);
                 item.appendChild(statusDot);
-
-                item.addEventListener('click', (e) => {
-                    if (e.target !== checkbox) {
-                        checkbox.click();
-                    }
-                });
-
                 gridContainer.appendChild(item);
             });
 
@@ -955,16 +298,82 @@
 
         function getSelectedClients() {
             const checkboxes = document.querySelectorAll('.client-checkbox');
-            const selected = [];
-            checkboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    const customer = allCustomers.find(c => c.id == checkbox.dataset.id);
-                    if (customer) selected.push(customer);
-                }
-            });
-            return selected;
+            return Array.from(checkboxes)
+                .filter(cb => cb.checked)
+                .map(cb => allCustomers.find(c => c.id == cb.dataset.id));
         }
 
+        // ---------------------- route ----------------------
+        function drawRoute(waypoints) {
+            if (routeLine) {
+                map.removeObject(routeLine);
+                routeLine = null;
+            }
+
+            const routingParams = {
+                transportMode: 'car',
+                origin: `${waypoints[0].latitude},${waypoints[0].longitude}`,
+                destination: `${waypoints.at(-1).latitude},${waypoints.at(-1).longitude}`,
+                return: 'polyline,summary,actions,instructions',
+            };
+
+            if (waypoints.length > 2) {
+                routingParams.via = waypoints.slice(1, -1).map(p => `${p.latitude},${p.longitude}`);
+            }
+
+            router.calculateRoute(routingParams, result => {
+                if (result.routes.length) {
+                    const route = result.routes[0];
+                    currentRoute = route;
+                    const linestring = H.geo.LineString.fromFlexiblePolyline(route.sections[0].polyline);
+
+                    routeLine = new H.map.Polyline(linestring, {
+                        style: { strokeColor: '#0a6ed1', lineWidth: 4 }
+                    });
+
+                    map.addObject(routeLine);
+                    map.getViewModel().setLookAtData({ bounds: routeLine.getBoundingBox() });
+
+                    updateRouteInfo(route, waypoints.length);
+                }
+            }, error => {
+                console.error("Erro ao calcular rota:", error);
+            });
+        }
+
+        function updateRouteInfo(route, clientCount) {
+            const routeInfo = document.getElementById('routeInfo');
+            const distance = Math.round(route.sections[0].summary.length / 1000);
+            const duration = Math.round(route.sections[0].summary.duration / 60);
+
+            document.getElementById('routeDistance').textContent = `${distance}`;
+            document.getElementById('routeDuration').textContent = `${duration}`;
+            document.getElementById('routeClients').textContent = `${clientCount}`;
+            routeInfo.classList.add('visible');
+        }
+
+        function clearRoute() {
+            if (routeLine) {
+                map.removeObject(routeLine);
+                routeLine = null;
+                currentRoute = null;
+            }
+
+            document.querySelectorAll('.client-checkbox').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.client-item').forEach(item => item.classList.remove('selected'));
+            document.getElementById('routeInfo').classList.remove('visible');
+        }
+
+        function optimizeRoute() {
+            const selected = getSelectedClients();
+            if (selected.length >= 2) {
+                drawRoute(selected);
+            } else {
+                alert('Selecione pelo menos 2 clientes para calcular a rota.');
+            }
+        }
+
+        // ---------------------- form route ----------------------
         function openFormRoute() {
             const customers = getSelectedClients();
             if (customers.length === 0) {
@@ -989,10 +398,8 @@
         }
 
         async function saveRoute() {
-
             const nameRoute = document.getElementById('routeName').value.trim();
             const initialDate = document.getElementById('routeDate').value;
-            const typeVisit = document.getElementById('routeTypeVisit').value;
             const notes = document.getElementById('routeNotes').value.trim();
 
             const daysWeekCheckboxes = document.querySelectorAll('.days-week input[type="checkbox"]');
@@ -1006,7 +413,6 @@
             }
 
             const selectedCustomers = getSelectedClients();
-
             const timestampMs = new Date(initialDate).getTime();
             const startDateFormatted = `/Date(${timestampMs})/`;
 
@@ -1016,16 +422,13 @@
                 excludeDays[`Exclude${day}Indicator`] = !daysSelected.includes(getNameDay(index));
             });
 
-            const routeAccounts = selectedCustomers.map((customer, index) => {
-                return {
-                    AccountID: customer.id,
-                    Duration: "PT1H",
-                    StartTime: "PT08H00M00S",
-                    EndTime: "PT09H00M00S",
-                    PreparationTime: "PT1H"
-                };
-            });
-
+            const routeAccounts = selectedCustomers.map(customer => ({
+                AccountID: customer.id,
+                Duration: "PT1H",
+                StartTime: "PT08H00M00S",
+                EndTime: "PT09H00M00S",
+                PreparationTime: "PT1H"
+            }));
 
             const payload = {
                 Name: nameRoute || "Nova Rota",
@@ -1041,17 +444,16 @@
                 RouteAccount: routeAccounts
             };
 
-            console.log(payload)
-
-            const response = await axios.post('/api/rotas', payload).then((res) => {
-
-            }).catch(err => {
-                console.log(err)
-            });
-            alert("Rota salva com sucesso! (Funcionalidade de backend pode ser integrada aqui)");
-            closeFormRoute();
-            clearFormRoute();
-            clearRoute();
+            try {
+                await axios.post('/api/rotas', payload);
+                alert("Rota salva com sucesso!");
+                closeFormRoute();
+                clearFormRoute();
+                clearRoute();
+            } catch (err) {
+                console.error(err);
+                alert("Erro ao salvar rota.");
+            }
         }
 
         function clearFormRoute() {
@@ -1060,20 +462,343 @@
             document.getElementById('routeTypeVisit').value = '';
             document.getElementById('routeNotes').value = '';
 
-            const checkboxes = document.querySelectorAll('.days-week input[type="checkbox"]');
-            checkboxes.forEach(cb => cb.checked = false);
-
-            const tbody = document.querySelector('#tableCustomers tbody');
-            tbody.innerHTML = '';
-
+            document.querySelectorAll('.days-week input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.querySelector('#tableCustomers tbody').innerHTML = '';
         }
 
 
+        let polygonSelectionMode = false;
+        let currentPolygon = null;
+        let polygonGroup = null;
+        let trianglePoints = [];
 
+        function enablePolygonSelection() {
+            if (polygonSelectionMode) {
+                disablePolygonSelection();
+                return;
+            }
 
+            polygonSelectionMode = true;
 
+            document.getElementById('mapContainer').style.cursor = 'crosshair';
+
+            const button = document.querySelector('button[onclick="enablePolygonSelection()"]');
+            button.innerHTML = '🔲 Cancelar Seleção';
+            button.classList.add('active');
+
+            map.addEventListener('tap', onMapClick);
+
+            showPolygonInstructions();
+        }
+
+        function disablePolygonSelection() {
+            polygonSelectionMode = false;
+            trianglePoints = [];
+
+            document.getElementById('mapContainer').style.cursor = 'default';
+
+            const button = document.querySelector('button[onclick="enablePolygonSelection()"]');
+            button.innerHTML = '🔲 Selecionar Área';
+            button.classList.remove('active');
+
+            map.removeEventListener('tap', onMapClick);
+
+            hidePolygonInstructions();
+        }
+
+        function onMapClick(evt) {
+            if (!polygonSelectionMode) return;
+
+            evt.stopPropagation();
+
+            if (currentPolygon) return;
+
+            const coord = map.screenToGeo(
+                evt.currentPointer.viewportX,
+                evt.currentPointer.viewportY
+            );
+
+            createInitialTriangle(coord);
+
+            disablePolygonSelection();
+
+            setTimeout(() => {
+                showPolygonActions();
+            }, 300);
+        }
+
+        function createInitialTriangle(centerPoint) {
+            const zoomLevel = map.getZoom();
+            const triangleSize = Math.max(0.01, 1 / Math.pow(2, zoomLevel - 5));
+
+            const point1 = {
+                lat: centerPoint.lat + triangleSize,
+                lng: centerPoint.lng
+            };
+            const point2 = {
+                lat: centerPoint.lat - triangleSize / 2,
+                lng: centerPoint.lng - triangleSize * Math.cos(Math.PI / 6)
+            };
+            const point3 = {
+                lat: centerPoint.lat - triangleSize / 2,
+                lng: centerPoint.lng + triangleSize * Math.cos(Math.PI / 6)
+            };
+
+            trianglePoints = [point1, point2, point3];
+
+            createResizableTriangle();
+        }
+
+        function createResizableTriangle() {
+            const lineString = new H.geo.LineString();
+            trianglePoints.forEach(point => {
+                lineString.pushPoint(point);
+            });
+            lineString.pushPoint(trianglePoints[0]);
+
+            currentPolygon = new H.map.Polygon(
+                new H.geo.Polygon(lineString),
+                {
+                    style: {
+                        fillColor: 'rgba(0, 100, 200, 0.3)',
+                        strokeColor: 'rgba(0, 100, 200, 0.8)',
+                        lineWidth: 5
+                    }
+                }
+            );
+
+            const verticeGroup = createVerticeGroup();
+
+            polygonGroup = new H.map.Group({
+                volatility: true,
+                objects: [currentPolygon, verticeGroup]
+            });
+
+            currentPolygon.draggable = true;
+
+            map.addObject(polygonGroup);
+
+            setupPolygonEvents(polygonGroup, verticeGroup);
+
+            verticeGroup.setVisibility(true);
+
+            map.getViewModel().setLookAtData({ bounds: currentPolygon.getBoundingBox() });
+        }
+
+        function createVerticeGroup() {
+            const svgCircle = `<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="8" cy="8" r="6" fill="red" stroke="white" stroke-width="2"/>
+    </svg>`;
+
+            const verticeGroup = new H.map.Group({
+                visibility: false
+            });
+
+            trianglePoints.forEach((point, index) => {
+                const vertice = new H.map.Marker(point, {
+                    icon: new H.map.Icon(svgCircle, { anchor: { x: 8, y: 8 } })
+                });
+
+                vertice.draggable = true;
+                vertice.setData({ verticeIndex: index });
+                verticeGroup.addObject(vertice);
+            });
+
+            return verticeGroup;
+        }
+
+        function setupPolygonEvents(mainGroup, verticeGroup) {
+            let polygonTimeout;
+
+            mainGroup.addEventListener('pointerenter', function (evt) {
+                if (polygonTimeout) {
+                    clearTimeout(polygonTimeout);
+                    polygonTimeout = null;
+                }
+                verticeGroup.setVisibility(true);
+                document.body.style.cursor = 'move';
+            }, true);
+
+            mainGroup.addEventListener('pointerleave', function (evt) {
+                const timeout = evt.currentPointer.type == 'touch' ? 1000 : 200;
+                polygonTimeout = setTimeout(() => {
+                    verticeGroup.setVisibility(false);
+                    document.body.style.cursor = 'default';
+                }, timeout);
+            }, true);
+
+            verticeGroup.addEventListener('pointerenter', function (evt) {
+                document.body.style.cursor = 'pointer';
+                if (polygonTimeout) {
+                    clearTimeout(polygonTimeout);
+                    polygonTimeout = null;
+                }
+            }, true);
+
+            verticeGroup.addEventListener('pointerleave', function (evt) {
+                document.body.style.cursor = 'default';
+            }, true);
+
+            verticeGroup.addEventListener('drag', function (evt) {
+                const pointer = evt.currentPointer;
+                const geoLineString = currentPolygon.getGeometry().getExterior();
+                const geoPoint = map.screenToGeo(pointer.viewportX, pointer.viewportY);
+
+                evt.target.setGeometry(geoPoint);
+
+                const verticeIndex = evt.target.getData().verticeIndex;
+
+                trianglePoints[verticeIndex] = geoPoint;
+
+                geoLineString.removePoint(verticeIndex);
+                geoLineString.insertPoint(verticeIndex, geoPoint);
+
+                if (verticeIndex === 0) {
+                    geoLineString.removePoint(trianglePoints.length);
+                    geoLineString.insertPoint(trianglePoints.length, geoPoint);
+                }
+
+                currentPolygon.setGeometry(new H.geo.Polygon(geoLineString));
+
+                evt.stopPropagation();
+            }, true);
+        }
+
+        function showPolygonInstructions() {
+            const instructionDiv = document.createElement('div');
+            instructionDiv.id = 'polygonInstructions';
+            instructionDiv.className = 'polygon-instructions';
+            instructionDiv.innerHTML = `
+        <div class="instruction-content">
+            <h4>🔲 Seleção de Área</h4>
+            <p>Clique no mapa para criar um triângulo.</p>
+            <p>Depois arraste os vértices para redimensionar.</p>
+            <div class="instruction-buttons">
+                <button class="fiori-button" onclick="clearPolygonSelection()">🗑️ Cancelar</button>
+            </div>
+        </div>
+    `;
+
+            document.body.appendChild(instructionDiv);
+        }
+
+        function hidePolygonInstructions() {
+            const instructionDiv = document.getElementById('polygonInstructions');
+            if (instructionDiv) {
+                instructionDiv.remove();
+            }
+        }
+
+        function showPolygonActions() {
+            const actionDiv = document.createElement('div');
+            actionDiv.id = 'polygonActions';
+            actionDiv.className = 'polygon-actions';
+            actionDiv.innerHTML = `
+        <div class="action-content">
+            <h4>🔺 Área Triangular Selecionada</h4>
+            <div class="action-buttons">
+                <button class="fiori-button primary" onclick="selectClientsInPolygon()">
+                    👥 Selecionar Clientes na Área
+                </button>
+                <button class="fiori-button" onclick="clearPolygonSelection()">
+                    🗑️ Remover Área
+                </button>
+            </div>
+        </div>
+    `;
+
+            document.body.appendChild(actionDiv);
+        }
+
+        function clearPolygonSelection() {
+            if (polygonGroup) {
+                map.removeObject(polygonGroup);
+                polygonGroup = null;
+                currentPolygon = null;
+            }
+
+            trianglePoints = [];
+
+            hidePolygonInstructions();
+            hidePolygonActions();
+            clearRoute();
+
+            disablePolygonSelection();
+        }
+
+        function hidePolygonActions() {
+            const actionDiv = document.getElementById('polygonActions');
+            if (actionDiv) {
+                actionDiv.remove();
+            }
+        }
+
+        function selectClientsInPolygon() {
+            if (!currentPolygon) {
+                alert('Nenhuma área selecionada.');
+                return;
+            }
+
+            let selectedCount = 0;
+            const polygon = currentPolygon.getGeometry().getExterior();
+
+            document.querySelectorAll('.client-checkbox').forEach(cb => {
+                cb.checked = false;
+                cb.closest('.client-item').classList.remove('selected');
+            });
+
+            allCustomers.forEach((customer, index) => {
+                const point = { lat: customer.latitude, lng: customer.longitude };
+
+                if (isPointInPolygon(point, polygon)) {
+                    const checkbox = document.querySelector(`.client-checkbox[data-id="${customer.id}"]`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                        checkbox.closest('.client-item').classList.add('selected');
+                        selectedCount++;
+                    }
+                }
+            });
+
+            if (selectedCount > 0) {
+                alert(`${selectedCount} cliente(s) selecionado(s) na área triangular.`);
+
+                const selected = getSelectedClients();
+                if (selected.length >= 2) {
+                    drawRoute(selected);
+                }
+            } else {
+                alert('Nenhum cliente encontrado na área selecionada.');
+            }
+        }
+
+        function isPointInPolygon(point, polygon) {
+            const vertices = [];
+
+            polygon.eachLatLngAlt((lat, lng) => {
+                vertices.push({ lat, lng });
+            });
+
+            if (vertices.length > 0 &&
+                vertices[0].lat === vertices[vertices.length - 1].lat &&
+                vertices[0].lng === vertices[vertices.length - 1].lng) {
+                vertices.pop();
+            }
+
+            let inside = false;
+
+            for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+                if (((vertices[i].lat > point.lat) !== (vertices[j].lat > point.lat)) &&
+                    (point.lng < (vertices[j].lng - vertices[i].lng) * (point.lat - vertices[i].lat) / (vertices[j].lat - vertices[i].lat) + vertices[i].lng)) {
+                    inside = !inside;
+                }
+            }
+
+            return inside;
+        }
 
     </script>
+
 
 </body>
 
